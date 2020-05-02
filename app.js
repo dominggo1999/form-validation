@@ -21,11 +21,57 @@ const showSuccess = (element) =>{
     formControl.className = "form-control success";
 }
 
+const getFieldName = (item) =>{
+    let name = item.id;
+    return name.slice(0,1).toUpperCase() + name.slice(1);
+}
+
+const isEmpty = (item) =>{
+    return item.value.trim() === "";
+}
+
+const isRequired = (arr)=>{
+    arr.forEach(item => {
+        if(isEmpty(item)){
+            showError(item, `${getFieldName(item)} is required`);
+        }else{
+            showSuccess(item);
+        }
+    });
+}
+
 const checkEmail = (email) =>{
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    return re.test(String(email).toLowerCase());
+    let check =  re.test(String(email.value.trim()).toLowerCase());
+
+    if(!check && !isEmpty(email) ){
+        showError(email, `${getFieldName(email)} is invalid`);
+    }else if(check && !isEmpty(email)){
+        showSuccess(email);
+    }
 }
+
+const checkLength = (item,min,max) =>{
+    if(!isEmpty(item)){
+        if(item.value.length < min ){
+            showError(item, `${getFieldName(item)} must be at least ${min} characters`);
+        }else if(item.value.length >= max ){
+            showError(item, `${getFieldName(item)} must be less than ${max} characters`);
+        }else{
+            showSuccess(item);
+        }
+    }
+}
+
+const passwordMatched = (password1,password2) =>{
+    if(!isEmpty(password1) && !isEmpty(password2)){
+        if(password1.value !== password2.value){
+            showError(password2,"Passwords do not match");
+        }
+    }
+}
+
 
 // Event Listener
 // Pertama saat form di submit maka event perlu di cancel, agar sebelum dikirim ke backend maka dapat di validasi di front end
@@ -35,33 +81,14 @@ form.addEventListener("submit",e=>{
     //Cancel event
     e.preventDefault();
 
-    // Check username
-    if(username.value.trim() === ""){
-        showError(username, "Username is required");
-    }else{
-        showSuccess(username);
-    }
+    //Make array
+    values = [username,email,password,password2]
 
-    // Check email
-    if(email.value === ""){
-        showError(email, "Email is required");
-    }else if(!checkEmail(email.value)){
-        showError(email, "Email is invalid !");
-    }else{
-        showSuccess(email);
-    }
-
-    // Check password
-    if(password.value.trim() ===""){
-        showError(password, "Password is required");
-    }else{
-        showSuccess(password);
-    }
-
-    // Check password2
-    if(password2.value.trim() === ""){
-        showError(password2, "Confirm password is required");
-    }else{
-        showSuccess(password2);
-    }
+    //Array check 
+    isRequired(values);
+    checkEmail(email);
+    checkLength(username,3,25);
+    checkLength(password,8,20);
+    checkLength(password2,8,20);
+    passwordMatched(password,password2);
 })
