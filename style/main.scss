@@ -106,7 +106,6 @@ body{
                     color: #2014C9;
                 }
                 input:not(.btn-submit){
-                    margin-bottom: 15px;
                     height: 40px;
                     width: 100%;
                     background: rgba(233, 234, 238, 0.582);
@@ -114,6 +113,12 @@ body{
                     padding: 15px 15px;
                     font-size: 17px;
                     color: rgba(54,54,54,1);
+                    outline: none;
+                    border-radius: 10px;
+
+                    &:focus{
+                        border: 2px solid rgba(34, 34, 34, 0.747) ;
+                    }
                 }
 
                 input.btn-submit{
@@ -125,6 +130,41 @@ body{
                     text-transform: uppercase;
                     letter-spacing: 1px;
                 }
+
+                .form-control{
+                    position: relative;
+                    margin-bottom: 30px;
+                }
+
+                span{
+                    display: none;
+                    position: absolute;
+                    left: 0;
+                    top: 100%;
+                    margin-bottom: 10px;
+                    font-size: 12px;
+                }
+
+
+                // If valid
+                .form-control.success{
+                    input{
+                        border: 2px solid rgb(102, 117, 255);
+                    }
+                }
+
+                //If error 
+                .form-control.error{
+                    input{
+                        border: 2px solid;
+                        border-color:rgb(255, 125, 125);
+                    }
+
+                    span{
+                        color:rgb(255, 125, 125) ;
+                        display: inline-block;
+                    }
+                }
             }
         }
     }
@@ -135,7 +175,7 @@ body{
     .form-validation{
         .container{
             display: grid;
-            height: 500px;
+            height: 60%;
             width: 100%;
             max-width: 772px;
             grid-template-columns: 45% 55%;
